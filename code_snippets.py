@@ -1,17 +1,20 @@
 import os
 from glob import glob
 from shutil import copyfile
+import re
 
-path = os.path.join(os.getcwd(),'PITCH/PreprocData')
-#glob(path + '/PreprocData/[0-9][0-9]/[CEa-z]*/*/*/**')
+path = os.path.join(os.getcwd(), 'PITCH/PreprocData')
+out_dir = os.path.join(os.getcwd(), 'PITCH/Bids')
 file_dict = {'t1s': [], 'asls': [], 'flankers': [], 'rests': []}
 file_dict['t1s'] = glob(path + '/[0-9][0-9]/[CEa-z]*/Pre/rsOut/anat/T1_MNI.nii.gz')
 
-file_dict['asls'] = glob(path + '/[0-9][0-9]/[CEa-z]*/[Preost]*/ASL/CBF_calc_1_5spld.nii.gz')
+# abstract some paths so lines don't get too long
+prefix = '/[0-9][0-9]/[CEa-z]*/[Preost]*'
+file_dict['asls'] = glob(path + prefix + '/ASL/CBF_calc_1_5spld.nii.gz')
 
-file_dict['flankers'] = glob(path + '/[0-9][0-9]/[CEa-z]*/[Preost]*/Flanker/run[1-2]/Flanker[1-2]Raw.nii.gz')
+file_dict['flankers'] = glob(path + prefix + '/Flanker/run[1-2]/Flanker[1-2]Raw.nii.gz')
 
-file_dict['rests'] = glob(path + '/[0-9][0-9]/[CEa-z]*/[Preost]*/rsOut/func/RestingStateRaw.nii.gz')
+file_dict['rests'] = glob(path + prefix + '/rsOut/func/RestingStateRaw.nii.gz')
 
 for scantype, filenames in file_dict.items():
     if scantype == 't1s':
@@ -32,6 +35,6 @@ for scantype, filenames in file_dict.items():
         len(re.search(pattern, filename).groups())
 
         out_filename = re.sub(pattern, repl, filename)
+        out_path = os.path.join(out_dir, out_filename)
         # add the path back in
-        
-        copyfile(filename, out_filename)
+        copyfile(filename, out_path)
