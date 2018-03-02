@@ -16,6 +16,8 @@ file_dict['flankers'] = glob(path + prefix + '/Flanker/run[1-2]/Flanker[1-2]Raw.
 
 file_dict['rests'] = glob(path + prefix + '/rsOut/func/RestingStateRaw.nii.gz')
 
+asdf = 5
+
 for scantype, filenames in file_dict.items():
     if scantype == 't1s':
         pattern = re.compile(r"")
