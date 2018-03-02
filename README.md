@@ -1,5 +1,5 @@
 # PitchToBids
-Goal: take the PITCH dataset and rename/move files so they conform to the BIDS standard 
+Goal: take the PITCH dataset and rename/move files so they conform to the BIDS standard
 
 ## Getting Started, Step 0
 1) clone this repository: click on the green clone/download button and select the copy to clipboard option
@@ -24,6 +24,6 @@ Goal: take the PITCH dataset and rename/move files so they conform to the BIDS s
   
 ## Step 2: Coding
 - Background: REGEX
-  - [Excellent Introduction](https://www.youtube.com/watch?v=0sOfhhduqks&feature=youtu.be&t=5m27s)
-    - [matching tutorial exercises](https://pycon2016.regex.training/)
+  - [Excellent Introduction](https://www.youtube.com/watch?v=0sOfhhduqks)
+    - [matching tutorial exercises](http://pycon2017.regex.training/)
     - ^^^ This will be crucial to matching the files we want to change and "grabbing" them intelligently
