@@ -22,15 +22,19 @@ for scantype, filenames in file_dict.items():
     if scantype == 't1s':
         pattern = re.compile(r"")
         repl = r""
+        #
     elif scantype == 'asls':
         pattern = re.compile(r"")
         repl = r""
+        #
     elif scantype == 'flankers':
         pattern = re.compile(r"")
         repl = r""
+        #
     elif scantype == 'rests':
         pattern = re.compile(r"^.*PreprocData/([0-9]{2})/([CEa-z]*)/([Preost]*).*$")
         repl = r"sub-0\1/ses-\2\3/func/sub-0\1_ses-\2\3_task-rest_bold.nii.gz"
+        #sub-001/ses-ControlPre/func/sub-001_ses-ControlPre_task-rest_bold.nii.gz
 
     for filename in filenames:
         # perhaps do a validation to make sure all groups exist that should exist
