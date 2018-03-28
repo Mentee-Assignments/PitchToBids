@@ -112,6 +112,11 @@ Goal: take the PITCH dataset and rename/move files so they conform to the BIDS s
 - ^^ The first column corresponds to onset, the second column to response_time,
   and the third we don't care about.
 
+- Finally the name of the file will conform to section 8.5 of the
+  [BIDS spec](http://bids.neuroimaging.io/bids_spec1.0.2.pdf). The output
+  file name will be identical to the flanker bold file name, except the suffix
+  will change from `_bold.nii.gz` to `_events.tsv`.
+
 - From this we have all the information we need to create a BIDS behavioral tsv.
 
 ## Step 4: Write out how you would solve this problem in English
