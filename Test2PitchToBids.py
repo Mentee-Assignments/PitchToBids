@@ -38,9 +38,12 @@ for sub_stype_ses_run, fnames in beh_dict.items():
                 cond_dict[sub_stype_ses_run][cond_corr] = [f]
         else:
             cond_dict[sub_stype_ses_run] = {cond_corr: [f]}
-            
+
+
 def non_zero_file(fpath):
     return os.path.isfile(fpath) and os.path.getsize(fpath) > 0
+
+
 headers = ['onset', 'duration', 'response_time', 'correct', 'trial_type']
 
 for sub_stype_ses_run, fdict in cond_dict.items():
@@ -59,13 +62,13 @@ for sub_stype_ses_run, fdict in cond_dict.items():
             else:
                 print('something is wrong for {fname}'.format(fname=fname))
             if non_zero_file(fname):
-            # load fname into pandas dataframe
+                # load fname into pandas dataframe
                 df_fname = pd.read_csv(fname, sep='       ', header=None)
                 df_fname.columns = col_names
                 df_fname.drop(labels=['extra1', 'extra2'], axis=1, inplace=True)
                 fname_dict[key] = df_fname
                 new_cols = ['trial_type', 'correct']
-                cond_list = [cond for _ in range(len(df_fname))]
+                cond_list = [cond_corr.lower() for _ in range(len(df_fname))]
                 if corr == 'Correct':
                     int_corr = 1
                 elif corr == 'Incorrect':
