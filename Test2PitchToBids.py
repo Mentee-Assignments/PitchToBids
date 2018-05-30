@@ -3,6 +3,7 @@ import os
 from glob import glob
 import re
 import pandas as pd
+import numpy as np
 
 path = os.path.join(os.getcwd(), 'PITCH/PreprocData')
 out_dir = os.path.join(os.getcwd(), 'PITCH/Bids')
@@ -37,6 +38,7 @@ for sub_stype_ses_run, fnames in beh_dict.items():
                 cond_dict[sub_stype_ses_run][cond_corr] = [f]
         else:
             cond_dict[sub_stype_ses_run] = {cond_corr: [f]}
+            
 def non_zero_file(fpath):
     return os.path.isfile(fpath) and os.path.getsize(fpath) > 0
 headers = ['onset', 'duration', 'response_time', 'correct', 'trial_type']
@@ -48,7 +50,6 @@ for sub_stype_ses_run, fdict in cond_dict.items():
         fname_dict = {'Duration': None, 'RT': None}
         cond, corr = cond_corr.split('_')
         for fname in fnames: #has RT and Duration file
-            print(fname)
             if 'Duration' in fname:
                 col_names = ['onset', 'duration', 'extra1', 'extra2']
                 key = 'Duration'
@@ -76,7 +77,13 @@ for sub_stype_ses_run, fdict in cond_dict.items():
                 for lst, coln in zip([cond_list, corr_list], new_cols):
                     se = pd.Series(lst)
                     df_fname[coln] = se.values
-        if fname_dict['Duration'] is not None and fname_dict['RT'] is not None:
+        if fname_dict['Duration'] is not None:
+            if fname_dict['RT'] is None:
+                df_Nan = fname_dict['Duration'].copy()
+                df_Nan.rename(index=str, columns={'duration': 'response_time'}, inplace=True)
+                RT_list = [np.nan] * len(df_Nan)
+                df_Nan['response_time'] = RT_list
+                fname_dict['RT'] = df_Nan
             df_cond_corr = pd.merge(fname_dict['Duration'], fname_dict['RT'], on=['onset', 'correct', 'trial_type'])
             # Append the resulting df from the above operation to run_df
             run_df = run_df.append(df_cond_corr)
@@ -85,4 +92,21 @@ for sub_stype_ses_run, fdict in cond_dict.items():
     sub, stype, ses, run = sub_stype_ses_run.split('_')
     out_file = os.path.join(os.getcwd(), 'PITCH/Bids/sub-0{sub}/ses-{stype}{ses}/func/sub-0{sub}_ses-{stype}{ses}_task-flanker_run-0{run}_events.tsv'.format(sub=sub, ses=ses, run=run, stype=stype))
     if not run_df.empty:
-        run_df.to_csv(out_file, sep='\t', index=False)
+        run_df.to_csv(out_file, sep='\t', na_rep='NaN', index=False)
+    #run_df.drop(['correct', 'trial_type', 'correct_x', 'trial_type_x'], axis=1, inplace=True)
+    # write out run_df to disk (as a tsv)
+
+        # X combine information from cond_corr (e.g. 'Neutral_Incorrect')
+        # X should have both Duration and RT files loaded as DataFrames
+        # X append the information to run_df
+    # Name and find the place to save the tsv in the BIDS appropiate manner
+    # ^^^ Don't use regex, we already have the relevant information from
+    # sub_stype_ses_run to save the file in the correct place.
+    # "sub-0{sub}/ses-{stype}{ses}/func/sub-0{sub}_ses-{stype}{ses}_task-flanker_run-0{run}_bold.nii.gz".format(your settings here)
+
+# items to learn about:
+# 1. format strings: https://www.youtube.com/watch?v=vTX3IwquFkc
+# 2. pandas operations:
+#    - read_csv
+#    - append, concat
+#    - to_csv
